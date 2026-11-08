@@ -56,7 +56,9 @@ Keys = category slugs used as `links.html?cat=KEY`. Current keys: adobe, microso
 - Hint lines: sensible defaults in place, owner should personalize
 - Skill bars: static HTML in index.html Tech Stack panel — owner edits names + `--lvl` percentages inline
 - Project "Shax Store" (id 1) is real: link https://shaxstore.fit, image "Screenshot 2026-08-23 235605.png" — body text and features still placeholder
-- Project "XBARBER SHOP" (id 2, type "case") = owner's Electron + SQLite barber-shop desktop app (source in ../x barber/xbarber-shop). Images `xbarber-dashboard.png` / `xbarber-cashier.png` were screenshotted from the app's built-in demo mode (empty data); owner can swap in shots with real data
+- Project "XBARBER SHOP" (id 2, type "linked", https://xbarber.duckdns.org) = barber-shop system: public booking site (live for XOSHAWIS STUDIO) + staff panel; also an Electron + SQLite desktop app (source in ../x barber/xbarber-shop)
+- Projects use `previewGroups: [{ label, items: [{ image, desc }] }]` → one tab per group on project.html (Shax: Storefront / Admin Panel; X Barber: Booking Website / Staff Panel). Screenshots `shax-*.png` / `xbarber-*.png` are real admin captures (Nov 2026) with customer names, emails, phones, Telegram chat ID and barber usernames BLURRED — keep blurring private data in any new admin screenshots; never put admin credentials in the repo
+- Owner dislikes the Kurdish word "ئەندازیاریکراو" — don't use it
 - `project1.png` is a copy of that screenshot kept as a spare
 - Only first resource card in useful.html had a real link — owner added Minecraft (2nd card); placeholders removed Aug 2026
 

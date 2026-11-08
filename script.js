@@ -1,128 +1,103 @@
+/* Projects shown in the showcase + project.html?id=N
+   previewGroups = tabs on the project page, each with its own screenshots.
+   (Admin screenshots have customer names, emails, phones and usernames blurred.) */
 const PROJECTS = {
   "1": {
     title: "Shax Store",
     type: "linked",
     badge: "Founder",                       // small label on the project card
     role: "Founder & Lead Developer",       // shown on project.html
-    tagline: "An online store I founded, designed and built end-to-end — storefront, admin panel and automation.",
-    languages: ["MySQL", "HTML", "CSS", "JavaScript", "Git", "AutoBot"],
+    tagline: "A live online store I founded and built end-to-end — storefront, full admin system and automation.",
+    languages: ["MySQL", "HTML", "CSS", "JavaScript", "Git", "Telegram Bot"],
     image: "Screenshot 2026-09-01 124259.png",
     link: "https://shaxstore.fit",
     code: "",
     // TODO: check these texts and adjust any detail that isn't accurate
     body: [
-      "Shax Store is my own e-commerce product. I founded it, decided what it needed to be, and led it from the first idea to a live store at shaxstore.fit — owning the product decisions, design, development and launch.",
-      "Technically it's a full-stack build: a fast, responsive storefront for customers, a private admin panel to manage products and orders, a MySQL database behind it, and an automation bot that takes repetitive work off the table. Security was part of the design from day one, not an afterthought."
+      "Shax Store is my own gym-wear brand and e-commerce platform. I founded it, decided what it needed to be, and led it from the first idea to a live store at shaxstore.fit — owning the product decisions, design, development and launch.",
+      "Behind the storefront is a complete admin system I built: products, categories and filters, order management with staff assignment, stock alerts, a storage module that tracks shipments, costs and expected profit, profit analytics per admin, customer notifications, and a Telegram bot that sends every order straight to the team's chat. It runs in Kurdish, Arabic and English, and security was part of the design from day one."
     ],
     features: [
       "Founded and led the product end-to-end — vision, design, build and launch",
-      "Responsive storefront that works on mobile and desktop",
-      "Admin panel to manage products and orders",
-      "MySQL database with a security-first setup",
-      "AutoBot automation for repetitive tasks"
+      "Responsive storefront in Kurdish, Arabic and English",
+      "Admin dashboard with live revenue, profit and cost",
+      "Order management with status tracking and staff assignment",
+      "Products, categories and filters management with stock alerts",
+      "Storage module for shipments — cost, delivery and expected profit",
+      "Telegram bot that sends every new order and status change",
+      "Notifications to customers, sponsors and admins",
+      "Role-based admin accounts with per-admin profit analytics"
     ],
-    // TODO: replace these with real screenshots of the site / admin panel + your own captions
-    previews: [
-      { 
-        image: "Screenshot 2026-09-01 124317.png", 
-        desc: "Storefront overview — the public shop page." 
-      },
-      { 
-        image: "Screenshot 2026-09-01 124348.png", 
-        desc: "Admin panel preview — manage products and orders." 
-      }
-    ],
-    // Mobile desktop previews for project
-    mobilePreviews: [
+    previewGroups: [
       {
-        image: "mobile-preview-1.png",
-        desc: "Mobile view of store homepage"
+        label: "Storefront",
+        items: [
+          { image: "Screenshot 2026-09-01 124259.png", desc: "Home — the live storefront at shaxstore.fit." },
+          { image: "shax-store-categories.png", desc: "Shop by category, then browse all products." },
+          { image: "shax-store-products.png", desc: "Product grid with colors, prices and sale prices." }
+        ]
       },
       {
-        image: "mobile-preview-2.png",
-        desc: "Mobile product listing page"
-      },
-      {
-        image: "mobile-preview-3.png", 
-        desc: "Mobile product detail view"
-      },
-      {
-        image: "mobile-preview-4.png",
-        desc: "Mobile cart functionality"
-      },
-      {
-        image: "mobile-preview-5.png",
-        desc: "Mobile checkout process"
-      },
-      {
-        image: "mobile-preview-6.png",
-        desc: "Mobile user profile section"
-      },
-      {
-        image: "mobile-preview-7.png",
-        desc: "Mobile category browsing"
-      }
-    ],
-    desktopPreviews: [
-      {
-        image: "desktop-preview-1.png",
-        desc: "Desktop store homepage"
-      },
-      {
-        image: "desktop-preview-2.png",
-        desc: "Desktop product listing grid"
-      },
-      {
-        image: "desktop-preview-3.png",
-        desc: "Desktop product detail view" 
-      },
-      {
-        image: "desktop-preview-4.png",
-        desc: "Desktop admin dashboard"
-      },
-      {
-        image: "desktop-preview-5.png",
-        desc: "Desktop order management"
-      },
-      {
-        image: "desktop-preview-6.png",
-        desc: "Desktop user account settings"
-      },
-      {
-        image: "desktop-preview-7.png",
-        desc: "Desktop category filter sidebar"
+        label: "Admin Panel",
+        items: [
+          { image: "shax-dashboard.png", desc: "Dashboard — revenue, profit, cost, orders and stock alerts at a glance." },
+          { image: "shax-orders.png", desc: "Orders — filter by status, assign to staff and update in one click." },
+          { image: "shax-products.png", desc: "Products — price, stock status and who added each item." },
+          { image: "shax-storage.png", desc: "Storage — shipments with cost, delivery and expected profit." },
+          { image: "shax-categories.png", desc: "Categories — names in English, Kurdish and Arabic." },
+          { image: "shax-filters.png", desc: "Filters — a second way to group products across stores." },
+          { image: "shax-notifications.png", desc: "Notifications — send messages to customers, sponsors and admins." },
+          { image: "shax-settings.png", desc: "Settings — Telegram bot that delivers every order to the team." }
+        ]
       }
     ]
   },
   "2": {
     title: "XBARBER SHOP",
-    type: "case",                           // desktop app — no live link
+    type: "linked",
     badge: "Founder",
     role: "Founder & Lead Developer",
-    tagline: "An offline desktop app for barber shops — POS, appointments, inventory and reports in one place.",
-    languages: ["Electron", "Node.js", "JavaScript", "HTML", "CSS", "SQLite"],
-    image: "xbarber-dashboard.png",
-    link: "",
+    tagline: "A barber-shop system: online booking website plus a full staff panel — cashier, history, expenses and reports.",
+    languages: ["JavaScript", "Node.js", "Electron", "SQLite", "HTML", "CSS"],
+    image: "xbarber-home.png",
+    link: "https://xbarber.duckdns.org",
     code: "",
     // TODO: check these texts and adjust any detail that isn't accurate
     body: [
-      "XBARBER SHOP is a desktop application I designed and built to run a barber shop from a single screen. It replaces paper books and scattered spreadsheets with one tool for the front desk: taking payments, booking appointments, tracking stock and seeing how the business is doing.",
-      "It's built with Electron and Node.js on top of a local SQLite database, so it works completely offline — no internet needed at the shop. It ships as a Windows installer, supports English and Kurdish, and includes backup and restore so the shop's data is never at risk."
+      "XBARBER SHOP is a complete system I built to run a barber shop. Customers book online in seconds — pick a barber, pick a free time, done — and the shop runs everything else from one staff panel. It's live today for XOSHAWIS STUDIO.",
+      "The staff panel gives every barber their own column of time slots, takes payments for services and products, keeps a full history of money earned per barber, tracks expenses, and shows the owner a dashboard of where the money came from. It also ships as an offline Windows desktop app built with Electron and SQLite, and the whole system works in Kurdish, Arabic and English."
     ],
     features: [
-      "POS cashier for services and products, with each order credited to a barber",
-      "Appointment scheduling with status tracking",
-      "Inventory with real-time stock updates and low-stock warnings",
-      "Customer profiles with visit history",
-      "Barber management — assign customers to one or more barbers",
-      "Reports and analytics with charts",
-      "Fully offline with a local SQLite database, plus backup & restore",
-      "Windows installer (.exe) built with electron-builder",
-      "English and Kurdish interface"
+      "Online booking website — choose a barber and a free time slot",
+      "Cashier with a separate column of time slots for every barber",
+      "Dashboard: total money, money by barber and most popular services",
+      "History of clients and money per barber, with printing",
+      "Expenses tracking, visible only to the owner",
+      "Catalog of services and products with prices and photos",
+      "Barber accounts with their own sign-in",
+      "Working hours, time between clients and booking rules in settings",
+      "Kurdish, Arabic and English — plus an offline Windows desktop version"
     ],
-    previews: [
-      { image: "xbarber-dashboard.png", desc: "Overview — live totals for customers, appointments, sales and stock." },
-      { image: "xbarber-cashier.png", desc: "Cashier — build an order, pick the barber and take payment." }
+    previewGroups: [
+      {
+        label: "Booking Website",
+        items: [
+          { image: "xbarber-home.png", desc: "Home — pick your barber and see their next free time." },
+          { image: "xbarber-booking.png", desc: "Booking — choose a day and a free slot in seconds." }
+        ]
+      },
+      {
+        label: "Staff Panel",
+        items: [
+          { image: "xbarber-dashboard.png", desc: "Dashboard — total money, money by barber and most popular services." },
+          { image: "xbarber-cashier.png", desc: "Cashier — every barber has their own column of time slots." },
+          { image: "xbarber-history.png", desc: "History — money earned and clients finished, per barber." },
+          { image: "xbarber-expenses.png", desc: "Expenses — what the shop paid, visible only to the owner." },
+          { image: "xbarber-catalog.png", desc: "Catalog — services and products with prices." },
+          { image: "xbarber-barbers.png", desc: "Barbers — add barbers and give each one a sign-in." },
+          { image: "xbarber-settings.png", desc: "Settings — language, shop details, working hours and booking rules." }
+        ]
+      }
     ]
   }
 };
@@ -240,11 +215,13 @@ function renderProject() {
   const previewsWrap = document.getElementById("project-previews");
   if (previewsWrap) {
     const previewSection = document.getElementById("preview-section");
-    const views = [
-      ["overview", "Overview", data.previews],
-      ["desktop", "Desktop View", data.desktopPreviews],
-      ["mobile", "Mobile View", data.mobilePreviews]
-    ].filter(([, , list]) => Array.isArray(list) && list.length);
+    // previewGroups: [{ label, items }] — one tab per group; plain `previews` = a single tab
+    const groups = Array.isArray(data.previewGroups)
+      ? data.previewGroups
+      : [{ label: "Overview", items: data.previews }];
+    const views = groups
+      .map((g, i) => [`g${i}`, g.label, g.items])
+      .filter(([, , list]) => Array.isArray(list) && list.length);
 
     if (!views.length) {
       if (previewSection) previewSection.style.display = "none";
@@ -760,7 +737,7 @@ const PROCESS = [
   {
     title: "Build at AI Speed",
     desc: "Develop full-stack with prompt-engineered AI workflows — fast, clean and secure.",
-    ku: { title: "دروستکردن بە خێرایی AI", desc: "گەشەپێدانی فول-ستاک بە ڕێکخستنی AI و پرۆمپتی ئەندازیاریکراو — خێرا، پاک و پارێزراو." }
+    ku: { title: "دروستکردن بە خێرایی AI", desc: "گەشەپێدانی فول-ستاک بە یارمەتی AI و پرۆمپتی ورد — خێرا، پاک و پارێزراو." }
   },
   {
     title: "Launch & Lead",
@@ -873,7 +850,7 @@ const I18N = {
     ctaTalk: "با قسە بکەین",
     statYears: "ساڵ دروستکردنی سۆفتوێر",
     statFounderVal: "دامەزرێنەر",
-    statAI: "کارکردن بە پرۆمپتی ئەندازیاریکراو",
+    statAI: "کارکردن بە پرۆمپتی AI",
     scrollLbl: "بۆ خوارەوە",
     aboutEyebrow: "٠١ — چی دەکەم",
     aboutTitle: "زیاتر لە تەنها کۆد",
