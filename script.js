@@ -2,20 +2,96 @@ const PROJECTS = {
   "1": {
     title: "Shax Store",
     type: "linked",
-    tagline: "Short description of your first project.",
-    languages: ["My Sql", "Html", "Css", "JavaScript", "GitIgnore" ,"AutoBot"],
-    image: "Screenshot 2026-08-23 235605.png",
+    badge: "Founder",                       // small label on the project card
+    role: "Founder & Lead Developer",       // shown on project.html
+    tagline: "An online store I founded, designed and built end-to-end — storefront, admin panel and automation.",
+    languages: ["MySQL", "HTML", "CSS", "JavaScript", "Git", "AutoBot"],
+    image: "Screenshot 2026-09-01 124259.png",
     link: "https://shaxstore.fit",
     code: "",
+    // TODO: check these texts and adjust any detail that isn't accurate
     body: [
-      "Write a longer introduction to your first project here. Explain what it does, the problem it solves, and why you built it.",
-      "Add more paragraphs as needed — features you are proud of, challenges you solved, and what you learned while building it."
+      "Shax Store is my own e-commerce product. I founded it, decided what it needed to be, and led it from the first idea to a live store at shaxstore.fit — owning the product decisions, design, development and launch.",
+      "Technically it's a full-stack build: a fast, responsive storefront for customers, a private admin panel to manage products and orders, a MySQL database behind it, and an automation bot that takes repetitive work off the table. Security was part of the design from day one, not an afterthought."
     ],
-    features: [],
+    features: [
+      "Founded and led the product end-to-end — vision, design, build and launch",
+      "Responsive storefront that works on mobile and desktop",
+      "Admin panel to manage products and orders",
+      "MySQL database with a security-first setup",
+      "AutoBot automation for repetitive tasks"
+    ],
     // TODO: replace these with real screenshots of the site / admin panel + your own captions
     previews: [
-      { image: "Screenshot 2026-08-23 235605.png", desc: "Storefront overview — the public shop page." },
-      { image: "project1.png", desc: "Admin panel preview — manage products and orders." }
+      { 
+        image: "Screenshot 2026-09-01 124317.png", 
+        desc: "Storefront overview — the public shop page." 
+      },
+      { 
+        image: "Screenshot 2026-09-01 124348.png", 
+        desc: "Admin panel preview — manage products and orders." 
+      }
+    ],
+    // Mobile desktop previews for project
+    mobilePreviews: [
+      {
+        image: "mobile-preview-1.png",
+        desc: "Mobile view of store homepage"
+      },
+      {
+        image: "mobile-preview-2.png",
+        desc: "Mobile product listing page"
+      },
+      {
+        image: "mobile-preview-3.png", 
+        desc: "Mobile product detail view"
+      },
+      {
+        image: "mobile-preview-4.png",
+        desc: "Mobile cart functionality"
+      },
+      {
+        image: "mobile-preview-5.png",
+        desc: "Mobile checkout process"
+      },
+      {
+        image: "mobile-preview-6.png",
+        desc: "Mobile user profile section"
+      },
+      {
+        image: "mobile-preview-7.png",
+        desc: "Mobile category browsing"
+      }
+    ],
+    desktopPreviews: [
+      {
+        image: "desktop-preview-1.png",
+        desc: "Desktop store homepage"
+      },
+      {
+        image: "desktop-preview-2.png",
+        desc: "Desktop product listing grid"
+      },
+      {
+        image: "desktop-preview-3.png",
+        desc: "Desktop product detail view" 
+      },
+      {
+        image: "desktop-preview-4.png",
+        desc: "Desktop admin dashboard"
+      },
+      {
+        image: "desktop-preview-5.png",
+        desc: "Desktop order management"
+      },
+      {
+        image: "desktop-preview-6.png",
+        desc: "Desktop user account settings"
+      },
+      {
+        image: "desktop-preview-7.png",
+        desc: "Desktop category filter sidebar"
+      }
     ]
   }
 };
@@ -64,6 +140,28 @@ function renderProject() {
 
   if (title) title.textContent = data.title;
   if (tagline) tagline.textContent = data.tagline || "";
+
+  const meta = document.getElementById("project-meta");
+  if (meta) {
+    const rows = [
+      ["Role", data.role],
+      ["Status", data.type === "linked" && data.link ? "Live" : "Case study"],
+      ["Stack", (data.languages || []).length ? `${data.languages.length} technologies` : ""]
+    ];
+    rows.forEach(([label, value]) => {
+      if (!value) return;
+      const item = document.createElement("div");
+      item.className = "meta-item";
+      const l = document.createElement("span");
+      l.className = "meta-label";
+      l.textContent = label;
+      const v = document.createElement("strong");
+      v.textContent = value;
+      item.appendChild(l);
+      item.appendChild(v);
+      meta.appendChild(item);
+    });
+  }
   if (image) {
     image.src = data.image;
     image.alt = `${data.title} preview`;
@@ -106,35 +204,79 @@ function renderProject() {
     }
   }
 
-  // previews gallery — each screenshot with its own description
+  // previews gallery — tabs for Overview / Desktop / Mobile.
+  // A screenshot that fails to load is removed; a view left empty loses its tab.
   const previewsWrap = document.getElementById("project-previews");
   if (previewsWrap) {
     const previewSection = document.getElementById("preview-section");
-    const previews = Array.isArray(data.previews) ? data.previews : [];
+    const views = [
+      ["overview", "Overview", data.previews],
+      ["desktop", "Desktop View", data.desktopPreviews],
+      ["mobile", "Mobile View", data.mobilePreviews]
+    ].filter(([, , list]) => Array.isArray(list) && list.length);
 
-    if (!previews.length) {
+    if (!views.length) {
       if (previewSection) previewSection.style.display = "none";
     } else {
-      previews.forEach((pv, index) => {
-        const card = document.createElement("figure");
-        card.className = "preview-card reveal";
+      const toggle = document.createElement("div");
+      toggle.className = "preview-toggle";
+      const grids = {};
+      const buttons = {};
 
-        const img = document.createElement("img");
-        img.src = pv.image || "";
-        img.alt = pv.desc || `${data.title} preview ${index + 1}`;
-        img.loading = "lazy";
-        img.addEventListener("error", () => {
-          img.remove();
-          card.classList.add("preview-fallback");
+      const show = (key) => {
+        Object.keys(grids).forEach((k) => {
+          grids[k].hidden = k !== key;
+          buttons[k].classList.toggle("active", k === key);
         });
+      };
 
-        const caption = document.createElement("figcaption");
-        caption.textContent = pv.desc || "";
+      const prune = (key) => {
+        if (!grids[key] || grids[key].children.length) return;
+        grids[key].remove();
+        buttons[key].remove();
+        delete grids[key];
+        delete buttons[key];
+        const left = Object.keys(grids);
+        if (!left.length) {
+          if (previewSection) previewSection.style.display = "none";
+          return;
+        }
+        if (!left.some((k) => buttons[k].classList.contains("active"))) show(left[0]);
+        toggle.hidden = left.length < 2;
+      };
 
-        card.appendChild(img);
-        card.appendChild(caption);
-        previewsWrap.appendChild(card);
+      views.forEach(([key, label, list]) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "preview-btn";
+        btn.textContent = label;
+        btn.addEventListener("click", () => show(key));
+        toggle.appendChild(btn);
+        buttons[key] = btn;
+
+        const grid = document.createElement("div");
+        grid.className = "preview-grid";
+        list.forEach((pv, index) => {
+          const card = document.createElement("figure");
+          card.className = "preview-card";
+          const img = document.createElement("img");
+          img.src = pv.image || "";
+          img.alt = pv.desc || `${data.title} preview ${index + 1}`;
+          // no lazy-loading: images in a hidden tab must still load (or fail) so empty tabs get removed
+          img.addEventListener("error", () => { card.remove(); prune(key); });
+          const caption = document.createElement("figcaption");
+          caption.textContent = pv.desc || "";
+          card.appendChild(img);
+          card.appendChild(caption);
+          grid.appendChild(card);
+        });
+        grids[key] = grid;
       });
+
+      toggle.hidden = views.length < 2;
+      previewsWrap.appendChild(toggle);
+      Object.values(grids).forEach((g) => previewsWrap.appendChild(g));
+      show(views[0][0]);
     }
   }
 
@@ -367,23 +509,34 @@ function initPointerEffects() {
     ripple.addEventListener("animationend", () => ripple.remove());
   }, { passive: true });
 
-  document.querySelectorAll(".project, .useful-card, .link-card, .store-btn").forEach((card) => {
-    card.addEventListener("pointermove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width;
-      const py = (e.clientY - rect.top) / rect.height;
-      card.style.setProperty("--mx", `${px * 100}%`);
-      card.style.setProperty("--my", `${py * 100}%`);
-      const rx = (0.5 - py) * 5;
-      const ry = (px - 0.5) * 7;
-      card.style.transition = "transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease";
-      card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-3px)`;
-    }, { passive: true });
+  // card tilt + spotlight — delegated, so cards re-rendered on language switch keep it
+  const TILT = ".project, .useful-card, .link-card, .store-btn, .role-card, .step-card";
+  let active = null;
 
-    card.addEventListener("pointerleave", () => {
-      card.style.transition = "";
-      card.style.transform = "";
-    }, { passive: true });
+  const release = (card) => {
+    card.style.transition = "";
+    card.style.transform = "";
+  };
+
+  document.addEventListener("pointermove", (e) => {
+    const card = e.target.closest(TILT);
+    if (active && active !== card) release(active);
+    active = card;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    card.style.setProperty("--mx", `${px * 100}%`);
+    card.style.setProperty("--my", `${py * 100}%`);
+    const rx = (0.5 - py) * 5;
+    const ry = (px - 0.5) * 7;
+    card.style.transition = "transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease";
+    card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-3px)`;
+  }, { passive: true });
+
+  document.addEventListener("pointerleave", () => {
+    if (active) release(active);
+    active = null;
   });
 }
 
@@ -404,6 +557,13 @@ function renderProjectCards() {
     img.src = data.image;
     img.alt = `${data.title} preview`;
     thumb.appendChild(img);
+
+    if (data.badge) {
+      const badge = document.createElement("span");
+      badge.className = "project-badge mono";
+      badge.textContent = data.badge;
+      thumb.appendChild(badge);
+    }
 
     const text = document.createElement("div");
     const h3 = document.createElement("h3");
@@ -429,39 +589,152 @@ function renderProjectCards() {
   });
 }
 
+/* Experience timeline — newest first. `tag` = small label on the card.
+   `ku` holds the Kurdish version (period stays the same). */
 const EXPERIENCE = [
   {
     period: "2025 — Present",
-    title: "Software Engineering Student",
-    place: "Salahaddin University \u00B7 Stage 2",
-    desc: "Studying Software Engineering at the College of Engineering — Java, databases, data structures and secure software design.",
+    tag: "Leadership",
+    title: "Founder & Lead Developer",
+    place: "Shax Store · shaxstore.fit",
+    desc: "Founded and lead Shax Store — I own the product vision, the roadmap and every build decision. Designed and developed the storefront, admin panel, database and automation end-to-end, then launched it live.",
     ku: {
-      title: "قوتابی ئەندازیاری سۆفتوێر",
-      place: "زانکۆی صلاحالدین · قۆناغی دووەم",
-      desc: "خوێندنی ئەندازیاری سۆفتوێر لە کۆلێژی ئەندازە — جاڤا، داتابەیس، داتا ستراکچەر و دیزاینی سۆفتوێری پارێزراو."
+      tag: "سەرکردایەتی",
+      title: "دامەزرێنەر و گەشەپێدەری سەرەکی",
+      place: "Shax Store · shaxstore.fit",
+      desc: "دامەزرێنەر و بەڕێوەبەری Shax Store — بەرپرسی ئامانج و نەخشەڕێگا و هەموو بڕیارێکی دروستکردنم. فرۆشگا و پانێڵی ئەدمین و داتابەیس و ئۆتۆمەیشنم لە سەرەتاوە تا کۆتایی دیزاین و دروست کرد و بڵاوم کردەوە."
     }
   },
   {
     period: "2024 — Present",
-    title: "Freelance Developer & Graphic Designer",
-    place: "Self-employed",
-    desc: "Building very secure full-stack websites with AI-powered workflows — plus graphic design, video editing and upscaling with Adobe Premiere Pro, After Effects and Topaz.",
+    tag: "AI · Web",
+    title: "AI Prompt Engineer & Website Developer",
+    place: "Freelance · Self-employed",
+    desc: "Engineer prompts and AI workflows that cut development time and raise quality. Build fast, secure, responsive websites for clients — from the first conversation to deployment.",
     ku: {
-      title: "گەشەپێدەر و دیزاینەری گرافیکی ئازاد",
-      place: "خۆبەکار",
-      desc: "دروستکردنی وێبسایتی فول-ستاکی زۆر پارێزراو بە یارمەتی AI — لەگەڵ دیزاینی گرافیک و مۆنتاژ و بەرزکردنەوەی کوالیتی ڤیدیۆ بە Premiere و After Effects و Topaz."
+      tag: "AI · وێب",
+      title: "ئەندازیاری پرۆمپتی AI و گەشەپێدەری وێبسایت",
+      place: "ئازاد · خۆبەکار",
+      desc: "پرۆمپت و ڕێکخستنی AI دروست دەکەم کە کاتی گەشەپێدان کەم دەکەنەوە و کوالیتی بەرز دەکەنەوە. وێبسایتی خێرا و پارێزراو و گونجاو بۆ کڕیاران دروست دەکەم — لە یەکەم گفتوگۆوە تا بڵاوکردنەوە."
+    }
+  },
+  {
+    period: "2024 — Present",
+    tag: "Creative",
+    title: "Creative Lead — Design & Video",
+    place: "Freelance",
+    desc: "Give products a strong visual identity — graphic design, video editing and AI upscaling with Premiere Pro, After Effects and Topaz Video AI.",
+    ku: {
+      tag: "داهێنان",
+      title: "سەرپەرشتیاری داهێنان — دیزاین و ڤیدیۆ",
+      place: "ئازاد",
+      desc: "ناسنامەیەکی بینراوی بەهێز بە بەرهەمەکان دەبەخشم — دیزاینی گرافیک، مۆنتاژی ڤیدیۆ و بەرزکردنەوەی کوالیتی بە AI لە Premiere Pro و After Effects و Topaz Video AI."
     }
   },
   {
     period: "2023 — 2024",
-    title: "Learning & Building",
-    place: "Self-taught developer",
-    desc: "Deep-dived into web development and programming fundamentals — HTML, CSS, Java and MySQL — shipping personal projects along the way.",
+    tag: "Problem Solving",
+    title: "Self-Taught Developer",
+    place: "Independent",
+    desc: "Taught myself to program by building — HTML, CSS, Java and MySQL — turning every roadblock into a solved problem and every idea into a working project.",
     ku: {
-      title: "فێربوون و دروستکردن",
-      place: "خوفێرکاریان",
-      desc: "فێربوونی قووڵی گەشەپێدانی وێب و بنەماکانی پرۆگرامسازی — HTML و CSS و جاڤا و MySQL — لەگەڵ دروستکردنی پرۆژەی کەسی."
+      tag: "چارەسەری کێشە",
+      title: "گەشەپێدەری خۆفێرکراو",
+      place: "سەربەخۆ",
+      desc: "بە دروستکردن پرۆگرامسازیم فێری خۆم کرد — HTML و CSS و جاڤا و MySQL — هەموو بەربەستێکم کرد بە کێشەیەکی چارەسەرکراو و هەموو بیرۆکەیەک بە پرۆژەیەکی کارا."
     }
+  },
+  {
+    period: "2025 — Present",
+    tag: "Education",
+    title: "Software Engineering",
+    place: "Salahaddin University · College of Engineering",
+    desc: "Formal engineering training alongside my own work — data structures, databases and secure software design.",
+    ku: {
+      tag: "خوێندن",
+      title: "ئەندازیاری سۆفتوێر",
+      place: "زانکۆی صلاحالدین · کۆلێژی ئەندازیاری",
+      desc: "ڕاهێنانی ئەندازیاری فەرمی لەگەڵ کارەکانی خۆم — داتا ستراکچەر، داتابەیس و دیزاینی سۆفتوێری پارێزراو."
+    }
+  }
+];
+
+/* "What I do" cards — icon = key in ROLE_ICONS */
+const ROLES = [
+  {
+    icon: "rocket",
+    title: "Founder & Project Leader",
+    desc: "I start and lead my own products — setting the vision, planning the roadmap and owning every decision until it ships. Founder of Shax Store.",
+    points: ["Product vision & roadmap", "End-to-end ownership", "Launch, feedback & growth"],
+    ku: {
+      title: "دامەزرێنەر و سەرکردەی پرۆژە",
+      desc: "بەرهەمەکانی خۆم دەست پێ دەکەم و بەڕێوەیان دەبەم — دیاریکردنی ئامانج، پلانی ڕێگا و بەرپرسیارێتی هەموو بڕیارێک تا بڵاو دەبێتەوە. دامەزرێنەری Shax Store.",
+      points: ["ئامانج و نەخشەڕێگای بەرهەم", "بەرپرسیارێتی تەواو لە سەرەتاوە تا کۆتایی", "بڵاوکردنەوە، فیدباک و گەشەکردن"]
+    }
+  },
+  {
+    icon: "puzzle",
+    title: "Problem Solver",
+    desc: "I break complex problems into clear, logical steps and turn them into solutions that work — in code and in business.",
+    points: ["Root-cause debugging", "Logical, clean architecture", "Fast, practical decisions"],
+    ku: {
+      title: "چارەسەرکەری کێشە",
+      desc: "کێشە ئاڵۆزەکان دابەش دەکەم بۆ هەنگاوی ڕوون و لۆجیکی و دەیانکەم بە چارەسەری کارا — لە کۆد و لە بزنسدا.",
+      points: ["دۆزینەوەی ڕەگی هەڵەکان", "پێکهاتەی لۆجیکی و پاک", "بڕیاری خێرا و کردەیی"]
+    }
+  },
+  {
+    icon: "spark",
+    title: "AI Prompt Engineer",
+    desc: "I design prompts and AI workflows that turn language models into reliable tools — faster development, smarter automation and better results.",
+    points: ["Prompt design & iteration", "AI-powered development", "Bots & automation"],
+    ku: {
+      title: "ئەندازیاری پرۆمپتی AI",
+      desc: "پرۆمپت و ڕێکخستنی AI دیزاین دەکەم کە مۆدێلەکانی زمان دەکەن بە ئامرازی متمانەپێکراو — گەشەپێدانی خێراتر، ئۆتۆمەیشنی زیرەکتر و ئەنجامی باشتر.",
+      points: ["دیزاین و باشترکردنی پرۆمپت", "گەشەپێدان بە یارمەتی AI", "بۆت و ئۆتۆمەیشن"]
+    }
+  },
+  {
+    icon: "web",
+    title: "Website Developer",
+    desc: "I build fast, secure and responsive websites — full-stack, from the database to the last animation on screen.",
+    points: ["Full-stack: HTML, CSS, JS, MySQL", "Security-first by default", "Responsive, animated UI"],
+    ku: {
+      title: "گەشەپێدەری وێبسایت",
+      desc: "وێبسایتی خێرا و پارێزراو و گونجاو بۆ هەموو شاشەیەک دروست دەکەم — فول-ستاک، لە داتابەیسەوە تا دوایین ئەنیمەیشن لەسەر شاشە.",
+      points: ["فول-ستاک: HTML و CSS و JS و MySQL", "پاراستن لە یەکەم هەنگاوەوە", "ڕووکاری گونجاو و ئەنیمەیشندار"]
+    }
+  }
+];
+
+const ROLE_ICONS = {
+  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  puzzle: '<path d="M10 3h4v3a2 2 0 1 0 4 0V3h3v7h-3a2 2 0 1 0 0 4h3v7h-7v-3a2 2 0 1 0-4 0v3H3v-7h3a2 2 0 1 0 0-4H3V3h7z"/>',
+  spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  web: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m9 8-2 2 2 2M15 8l2 2-2 2"/>'
+};
+
+/* "How I lead a project" steps */
+const PROCESS = [
+  {
+    title: "Understand",
+    desc: "Dig into the real problem, the users and the goal before writing a single line of code.",
+    ku: { title: "تێگەیشتن", desc: "پێش نووسینی یەک دێڕ کۆد، لە کێشە ڕاستەقینەکە و بەکارهێنەران و ئامانجەکە تێدەگەم." }
+  },
+  {
+    title: "Plan & Design",
+    desc: "Turn the idea into a roadmap, a structure and an interface everyone can follow.",
+    ku: { title: "پلان و دیزاین", desc: "بیرۆکەکە دەکەم بە نەخشەڕێگا و پێکهاتە و ڕووکارێک کە هەمووان بتوانن پەیڕەوی بکەن." }
+  },
+  {
+    title: "Build at AI Speed",
+    desc: "Develop full-stack with prompt-engineered AI workflows — fast, clean and secure.",
+    ku: { title: "دروستکردن بە خێرایی AI", desc: "گەشەپێدانی فول-ستاک بە ڕێکخستنی AI و پرۆمپتی ئەندازیاریکراو — خێرا، پاک و پارێزراو." }
+  },
+  {
+    title: "Launch & Lead",
+    desc: "Ship it, gather feedback and keep leading the product forward.",
+    ku: { title: "بڵاوکردنەوە و بەڕێوەبردن", desc: "بڵاوی دەکەمەوە، فیدباک کۆدەکەمەوە و بەردەوام بەرهەمەکە بەرەو پێش دەبەم." }
   }
 ];
 
@@ -480,16 +753,29 @@ try {
 
 const I18N = {
   en: {
-    typedWords: ["Full-Stack Web Developer", "AI-Powered App Builder", "Graphic Designer"],
-    badge: "\u2726 Available for work",
+    typedWords: ["Founder of Shax Store", "Website Developer", "AI Prompt Engineer", "Problem Solver", "Project Leader"],
+    roles: ["Software Developer", "Founder", "Project Leader", "Problem Solver", "AI Prompt Engineer", "Website Developer"],
+    badge: "✦ Founder · Available for work",
     titleOne: "Software",
     titleTwo: "Developer",
-    bio: "Software engineering student building fast, very secure full-stack web apps with AI-powered development \u2014 plus graphic design and video editing on the side.",
-    hintExplore: "\u2193 explore my work below",
-    hintOpen: "\u2198 open to full-time & freelance opportunities",
+    bio: "Software developer and founder. I lead my own projects from idea to launch — solving real problems with fast, secure websites and AI workflows I engineer myself.",
+    pillPrompt: "Prompt Engineering",
+    ctaWork: "View my work",
+    ctaTalk: "Let's talk",
+    statYears: "Years shipping software",
+    statFounderVal: "Founder",
+    statAI: "Prompt-engineered workflow",
     scrollLbl: "Scroll",
+    aboutEyebrow: "01 — What I do",
+    aboutTitle: "More than just code",
+    aboutSub: "I combine leadership, engineering and AI to take ideas from a blank page to a working product.",
+    processEyebrow: "02 — Leadership",
+    processTitle: "How I Lead a Project",
+    processSub: "The process I follow on every product — so ideas turn into results, not just plans.",
+    stepLbl: "Step",
+    showcaseEyebrow: "03 — Selected work",
     showcaseTitle: "Portfolio Showcase",
-    showcaseSub: "Explore my journey through projects and technical expertise.",
+    showcaseSub: "Products I've founded, built and led — plus the stack and credentials behind them.",
     tabProjects: "Projects",
     tabStack: "Tech Stack",
     tabCerts: "Certificates",
@@ -503,52 +789,71 @@ const I18N = {
     certCssName: "CSS Certification",
     certCssDesc: "Certified in CSS fundamentals.",
     certJavaName: "Java",
-    certJavaDesc: "Studying core Java \u2014 OOP, logic and application building.",
+    certJavaDesc: "Advancing in core Java — OOP, architecture and real applications.",
     certJsName: "JavaScript",
-    certJsDesc: "Learning modern JavaScript \u2014 DOM, ES6+ and interactive web.",
+    certJsDesc: "Deepening modern JavaScript — DOM, ES6+ and interactive web apps.",
     certPremiereName: "Adobe Premiere Pro",
-    certPremiereDesc: "Studying professional video editing \u2014 cutting, color and sound.",
+    certPremiereDesc: "Professional video editing — cutting, color and sound.",
     certAeName: "After Effects",
-    certAeDesc: "Learning motion graphics and visual effects.",
+    certAeDesc: "Motion graphics and visual effects.",
     certProgress: "In Progress",
-    langKurdishName: "Kurdish \u2014 Native Speaker",
-    langKurdishDesc: "Mother tongue \u2014 fully fluent.",
+    langKurdishName: "Kurdish — Native Speaker",
+    langKurdishDesc: "Mother tongue — fully fluent.",
     toolsTitle: "Tools I use daily",
+    toolAI: "AI assistants",
     chipAI: "AI-Powered Development",
+    chipPrompt: "Prompt Engineering",
+    chipBots: "AI Automation & Bots",
+    chipFullstack: "Full-Stack Web Development",
     chipKurdish: "Kurdish",
-    
+    expEyebrow: "04 — Experience",
     expTitle: "Experience",
-    expSub: "My journey so far \u2014 where I've been and what I've been building.",
+    expSub: "Founding, leading and building — the path that shaped how I work.",
     expYears: "Years of Experience",
-    contactTitle: "Contact Me",
-    contactSub: "Have something in mind? Send a message and let's connect.",
+    contactEyebrow: "05 — Contact",
+    contactTitle: "Let's Build Something",
+    contactSub: "Have a project, a problem to solve or an idea that needs a leader? Let's talk.",
     connectTitle: "Connect With Me",
-    connectSub: "Find me on my platforms \u2014 I'm most active on Instagram.",
+    connectSub: "Find me on my platforms — I'm most active on Instagram.",
     ulTitle: "Useful Links & Tools",
     ulSub: "My tools, resources and link store",
     tiktokProfile: "TikTok Profile",
     sayHello: "Say hello",
-    copyright: "\u00A9 2026 Harzheen Hawzheen \u2014 All rights reserved.",
+    footerRole: "Founder · Software Developer · AI Prompt Engineer",
+    copyright: "© 2026 Harzheen Hawzheen — All rights reserved.",
     backHome: "Home",
     backUseful: "Useful Content",
     usefulTitle: "Useful Content",
-    usefulSub: "resources \u00B7 tools \u00B7 links worth sharing",
+    usefulSub: "resources · tools · links worth sharing",
     linkStore: "Link Store",
     resources: "Resources",
     mdnDesc: "The best reference for HTML, CSS and JavaScript.",
-    mcDesc: "Minecraft website \u2014 download, play and build."
+    mcDesc: "Minecraft website — download, play and build."
   },
   ku: {
-    typedWords: ["گەشەپێدەری وێب", "دروستکەری بەرنامە بە AI", "دیزاینەری گرافیک"],
-    badge: "\u2726 ئامادەم بۆ کار",
+    typedWords: ["دامەزرێنەری Shax Store", "گەشەپێدەری وێبسایت", "ئەندازیاری پرۆمپتی AI", "چارەسەرکەری کێشە", "سەرکردەی پرۆژە"],
+    roles: ["گەشەپێدەری سۆفتوێر", "دامەزرێنەر", "سەرکردەی پرۆژە", "چارەسەرکەری کێشە", "ئەندازیاری پرۆمپتی AI", "گەشەپێدەری وێبسایت"],
+    badge: "✦ دامەزرێنەر · ئامادەم بۆ کار",
     titleOne: "گەشەپێدەری",
     titleTwo: "سۆفتوێر",
-    bio: "قوتابی ئەندازیاری سۆفتوێر کە بەرنامەی فول-ستاکی پارێزراو دروست دەکات بە یارمەتی AI — لەگەڵ دیزاینی گرافیک و مۆنتاژی ڤیدیۆ.",
-    hintExplore: "\u2193 سەیری کارەکانم بکە لە خوارەوە",
-    hintOpen: "\u2198 ئامادەم بۆ کاری فولتایم",
+    bio: "گەشەپێدەری سۆفتوێر و دامەزرێنەر. پرۆژەکانی خۆم لە بیرۆکەوە تا بڵاوکردنەوە بەڕێوە دەبەم — کێشەی ڕاستەقینە چارەسەر دەکەم بە وێبسایتی خێرا و پارێزراو و ڕێکخستنی AI کە خۆم دیزاینی دەکەم.",
+    pillPrompt: "ئەندازیاری پرۆمپت",
+    ctaWork: "سەیری کارەکانم بکە",
+    ctaTalk: "با قسە بکەین",
+    statYears: "ساڵ دروستکردنی سۆفتوێر",
+    statFounderVal: "دامەزرێنەر",
+    statAI: "کارکردن بە پرۆمپتی ئەندازیاریکراو",
     scrollLbl: "بۆ خوارەوە",
+    aboutEyebrow: "٠١ — چی دەکەم",
+    aboutTitle: "زیاتر لە تەنها کۆد",
+    aboutSub: "سەرکردایەتی و ئەندازیاری و AI تێکەڵ دەکەم بۆ ئەوەی بیرۆکە لە پەڕەیەکی بەتاڵەوە بگەیەنمە بەرهەمێکی کارا.",
+    processEyebrow: "٠٢ — سەرکردایەتی",
+    processTitle: "چۆن پرۆژەیەک بەڕێوە دەبەم",
+    processSub: "ئەو ڕێگایەی لە هەموو بەرهەمێکدا پەیڕەوی دەکەم — بۆ ئەوەی بیرۆکە ببێتە ئەنجام، نەک تەنها پلان.",
+    stepLbl: "هەنگاو",
+    showcaseEyebrow: "٠٣ — کارە هەڵبژێردراوەکان",
     showcaseTitle: "پیشاندانی کارەکانم",
-    showcaseSub: "سەیری گەشتەکەم بکە بەپێی پرۆژە و شارەزاییەکانم.",
+    showcaseSub: "ئەو بەرهەمانەی دامەزراندووم و دروستم کردوون و بەڕێوەم بردوون — لەگەڵ تەکنەلۆژیا و بڕوانامەکانی پشتیان.",
     tabProjects: "پرۆژەکان",
     tabStack: "تەکنەلۆژیا",
     tabCerts: "بڕوانامەکان",
@@ -564,27 +869,36 @@ const I18N = {
     langKurdishName: "کوردی — زمانی دایک",
     langKurdishDesc: "زمانی دایکە — تەواو شارەزا.",
     certJavaName: "جاڤا",
-    certJavaDesc: "فێربوونی جاڤا — بنەماکانی OOP و لۆجیک و دروستکردنی بەرنامە.",
+    certJavaDesc: "پێشکەوتن لە جاڤا — OOP و پێکهاتە و دروستکردنی بەرنامەی ڕاستەقینە.",
     certJsName: "JavaScript",
-    certJsDesc: "فێربوونی JavaScript — DOM و ES6 و وێبی کارلێکدار.",
+    certJsDesc: "قووڵکردنەوەی JavaScript — DOM و ES6 و بەرنامەی وێبی کارلێکدار.",
     certPremiereName: "ئەدۆبی پریمێر پرۆ",
-    certPremiereDesc: "فێربوونی مۆنتاژی پرۆفیشناڵ — برین و ڕەنگ و دەنگ.",
+    certPremiereDesc: "مۆنتاژی پرۆفیشناڵ — برین و ڕەنگ و دەنگ.",
     certAeName: "ئەفتر ئیفێکتس",
-    certAeDesc: "فێربوونی موشن گرافیک و ئیفێکتی بینراو.",
+    certAeDesc: "موشن گرافیک و ئیفێکتی بینراو.",
     certProgress: "لە بەرەوپێشچووندایە",
     toolsTitle: "ئامرازەکانی ڕۆژانەم",
+    toolAI: "یاریدەدەرەکانی AI",
+    chipAI: "گەشەپێدان بە یارمەتی AI",
+    chipPrompt: "ئەندازیاری پرۆمپت",
+    chipBots: "ئۆتۆمەیشن و بۆتی AI",
+    chipFullstack: "گەشەپێدانی وێبی فول-ستاک",
+    chipKurdish: "کوردی",
+    expEyebrow: "٠٤ — ئەزموون",
     expTitle: "ئەزموون",
-    expSub: "گەشتەکەم تا ئێستا — کێ بووم و چی دروستکردووە.",
+    expSub: "دامەزراندن، سەرکردایەتی و دروستکردن — ئەو ڕێگایەی شێوازی کارکردنمی دروست کرد.",
     expYears: "ساڵ ئەزموون",
-    contactTitle: "پەیوەندیم پێوە بکە",
-    contactSub: "پلانێکت هەیە؟ پەیوەندیم پێوە بکە با قسەمان بکەین.",
+    contactEyebrow: "٠٥ — پەیوەندی",
+    contactTitle: "با شتێک پێکەوە دروست بکەین",
+    contactSub: "پرۆژەیەکت هەیە، کێشەیەک بۆ چارەسەر، یان بیرۆکەیەک کە پێویستی بە سەرکردەیە؟ با قسە بکەین.",
     connectTitle: "پەیوەندیم پێوە بکە",
-    connectSub: " پلاتفۆرمەکان — زۆرترین چالاکیم لە ئینستاگرامە.",
+    connectSub: "پلاتفۆرمەکانم — زۆرترین چالاکیم لە ئینستاگرامە.",
     ulTitle: "لینک و ئامرازە بەسوودەکانم",
     ulSub: "ئامراز و سەرچاوە و فرۆشگای لینکەکەم",
     tiktokProfile: "پرۆفایلی تیکتۆک",
     sayHello: "سڵاوێک بکە",
-    copyright: "\u00A9 ٢٠٢٦ هەرژین هاوژین — هەموو مافەکان پارێزراون.",
+    footerRole: "دامەزرێنەر · گەشەپێدەری سۆفتوێر · ئەندازیاری پرۆمپتی AI",
+    copyright: "© ٢٠٢٦ هەرژین هاوژین — هەموو مافەکان پارێزراون.",
     backHome: "سەرەتا",
     backUseful: "ناوەڕۆکی بەسوود",
     usefulTitle: "ناوەڕۆکی بەسوود",
@@ -622,12 +936,102 @@ function applyLang(lang) {
   if (code) code.textContent = other.toUpperCase();
 }
 
+// re-render every language-dependent block after a language switch
 function restartExperience() {
-  const container = document.getElementById("timeline");
-  if (!container) return;
-  container.innerHTML = "";
+  ["timeline", "role-grid", "steps", "marquee-track"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "";
+  });
   renderExperience();
+  renderRoles();
+  renderProcess();
+  renderMarquee();
   initReveal();
+}
+
+function renderRoles() {
+  const grid = document.getElementById("role-grid");
+  if (!grid) return;
+
+  ROLES.forEach((entry, i) => {
+    const role = langState.lang === "ku" && entry.ku ? entry.ku : entry;
+    const card = document.createElement("article");
+    card.className = `role-card reveal${i === 0 ? " featured" : ""}`;
+
+    const top = document.createElement("div");
+    top.className = "role-top";
+    const icon = document.createElement("span");
+    icon.className = "role-icon";
+    icon.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${ROLE_ICONS[entry.icon] || ""}</svg>`;
+    const num = document.createElement("span");
+    num.className = "role-num mono";
+    num.textContent = String(i + 1).padStart(2, "0");
+    top.appendChild(icon);
+    top.appendChild(num);
+
+    const h3 = document.createElement("h3");
+    h3.textContent = role.title;
+    const p = document.createElement("p");
+    p.textContent = role.desc;
+
+    const ul = document.createElement("ul");
+    ul.className = "role-points";
+    (role.points || []).forEach((pt) => {
+      const li = document.createElement("li");
+      li.textContent = pt;
+      ul.appendChild(li);
+    });
+
+    card.appendChild(top);
+    card.appendChild(h3);
+    card.appendChild(p);
+    card.appendChild(ul);
+    grid.appendChild(card);
+  });
+}
+
+function renderProcess() {
+  const list = document.getElementById("steps");
+  if (!list) return;
+  const stepLbl = I18N[langState.lang].stepLbl;
+
+  PROCESS.forEach((entry, i) => {
+    const step = langState.lang === "ku" && entry.ku ? entry.ku : entry;
+    const li = document.createElement("li");
+    li.className = "step-card";
+
+    const num = document.createElement("span");
+    num.className = "step-num mono";
+    num.textContent = `${stepLbl} ${String(i + 1).padStart(2, "0")}`;
+    const h3 = document.createElement("h3");
+    h3.textContent = step.title;
+    const p = document.createElement("p");
+    p.textContent = step.desc;
+
+    li.appendChild(num);
+    li.appendChild(h3);
+    li.appendChild(p);
+    list.appendChild(li);
+  });
+}
+
+function renderMarquee() {
+  const track = document.getElementById("marquee-track");
+  if (!track) return;
+  const roles = I18N[langState.lang].roles || [];
+  // two copies so the loop is seamless
+  for (let copy = 0; copy < 2; copy++) {
+    roles.forEach((role) => {
+      const word = document.createElement("span");
+      word.className = "m-word";
+      word.textContent = role;
+      const star = document.createElement("span");
+      star.className = "m-star";
+      star.textContent = "✦";
+      track.appendChild(word);
+      track.appendChild(star);
+    });
+  }
 }
 
 function initLangToggle() {
@@ -726,9 +1130,18 @@ function renderExperience() {
     const item = document.createElement("article");
     item.className = "t-item reveal";
 
+    const head = document.createElement("div");
+    head.className = "t-head";
     const period = document.createElement("p");
     period.className = "t-period";
-    period.textContent = job.period;
+    period.textContent = entry.period;
+    head.appendChild(period);
+    if (job.tag) {
+      const tag = document.createElement("span");
+      tag.className = "t-tag mono";
+      tag.textContent = job.tag;
+      head.appendChild(tag);
+    }
 
     const title = document.createElement("h3");
     title.textContent = job.title;
@@ -741,7 +1154,7 @@ function renderExperience() {
     desc.className = "t-desc";
     desc.textContent = job.desc || "";
 
-    item.appendChild(period);
+    item.appendChild(head);
     item.appendChild(title);
     if (job.place) item.appendChild(place);
     item.appendChild(desc);
@@ -779,16 +1192,16 @@ function initCodeWindow() {
   if (!codeEl) return;
 
   const LINES = [
-    [["// harzheen.js \u2014 secure \u00B7 full-stack \u00B7 AI-powered", "cm"]],
-    [["const ", "kw"], ["developer", "var"], [" = {", "pl"]],
-    [["  name: ", "pl"], ["'Harzheen Hawzheen'", "str"], [",", "pl"]],
+    [["// harzheen.js \u2014 founder \u00B7 builder \u00B7 problem solver", "cm"]],
+    [["const ", "kw"], ["harzheen", "var"], [" = {", "pl"]],
     [["  role: ", "pl"], ["'Software Developer'", "str"], [",", "pl"]],
-    [["  stack: [", "pl"], ["'Java'", "str"], [", ", "pl"], ["'JavaScript'", "str"], [", ", "pl"], ["'MySQL'", "str"], ["],", "pl"]],
-    [["  aiPowered: ", "pl"], ["true", "num"], [",", "pl"]],
+    [["  founderOf: ", "pl"], ["'Shax Store'", "str"], [",", "pl"]],
+    [["  skills: [", "pl"], ["'Leadership'", "str"], [", ", "pl"], ["'Prompt Engineering'", "str"], [",", "pl"]],
+    [["           ", "pl"], ["'Web Development'", "str"], ["],", "pl"]],
     [["  secureByDefault: ", "pl"], ["true", "num"], [",", "pl"]],
     [["};", "pl"]],
-    [["while", "kw"], [" (", "pl"], ["alive", "var"], [") {", "pl"]],
-    [["  build", "fn"], ["(", "pl"], ["ideas", "var"], [");", "pl"]],
+    [["for", "kw"], [" (", "pl"], ["const ", "kw"], ["problem ", "var"], ["of ", "kw"], ["world", "var"], [") {", "pl"]],
+    [["  harzheen.", "pl"], ["solve", "fn"], ["(", "pl"], ["problem", "var"], [");", "pl"]],
     [["}", "pl"]]
   ];
 
@@ -1009,6 +1422,9 @@ function initParticles() {
 initLangToggle();
 renderProjectCards();
 renderExperience();
+renderRoles();
+renderProcess();
+renderMarquee();
 if (document.getElementById("project-title")) {
   renderProject();
 }
@@ -1023,6 +1439,6 @@ initFontLoader();
 initTypeEffect();
 initReveal();
 initParallax();
-  initTabs();
-  initParticles();
-  initCodeWindow();
+initTabs();
+initParticles();
+initCodeWindow();
