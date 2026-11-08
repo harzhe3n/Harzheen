@@ -93,6 +93,37 @@ const PROJECTS = {
         desc: "Desktop category filter sidebar"
       }
     ]
+  },
+  "2": {
+    title: "XBARBER SHOP",
+    type: "case",                           // desktop app — no live link
+    badge: "Founder",
+    role: "Founder & Lead Developer",
+    tagline: "An offline desktop app for barber shops — POS, appointments, inventory and reports in one place.",
+    languages: ["Electron", "Node.js", "JavaScript", "HTML", "CSS", "SQLite"],
+    image: "xbarber-dashboard.png",
+    link: "",
+    code: "",
+    // TODO: check these texts and adjust any detail that isn't accurate
+    body: [
+      "XBARBER SHOP is a desktop application I designed and built to run a barber shop from a single screen. It replaces paper books and scattered spreadsheets with one tool for the front desk: taking payments, booking appointments, tracking stock and seeing how the business is doing.",
+      "It's built with Electron and Node.js on top of a local SQLite database, so it works completely offline — no internet needed at the shop. It ships as a Windows installer, supports English and Kurdish, and includes backup and restore so the shop's data is never at risk."
+    ],
+    features: [
+      "POS cashier for services and products, with each order credited to a barber",
+      "Appointment scheduling with status tracking",
+      "Inventory with real-time stock updates and low-stock warnings",
+      "Customer profiles with visit history",
+      "Barber management — assign customers to one or more barbers",
+      "Reports and analytics with charts",
+      "Fully offline with a local SQLite database, plus backup & restore",
+      "Windows installer (.exe) built with electron-builder",
+      "English and Kurdish interface"
+    ],
+    previews: [
+      { image: "xbarber-dashboard.png", desc: "Overview — live totals for customers, appointments, sales and stock." },
+      { image: "xbarber-cashier.png", desc: "Cashier — build an order, pick the barber and take payment." }
+    ]
   }
 };
 

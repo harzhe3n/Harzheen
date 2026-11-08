@@ -56,6 +56,7 @@ Keys = category slugs used as `links.html?cat=KEY`. Current keys: adobe, microso
 - Hint lines: sensible defaults in place, owner should personalize
 - Skill bars: static HTML in index.html Tech Stack panel — owner edits names + `--lvl` percentages inline
 - Project "Shax Store" (id 1) is real: link https://shaxstore.fit, image "Screenshot 2026-08-23 235605.png" — body text and features still placeholder
+- Project "XBARBER SHOP" (id 2, type "case") = owner's Electron + SQLite barber-shop desktop app (source in ../x barber/xbarber-shop). Images `xbarber-dashboard.png` / `xbarber-cashier.png` were screenshotted from the app's built-in demo mode (empty data); owner can swap in shots with real data
 - `project1.png` is a copy of that screenshot kept as a spare
 - Only first resource card in useful.html had a real link — owner added Minecraft (2nd card); placeholders removed Aug 2026
 
